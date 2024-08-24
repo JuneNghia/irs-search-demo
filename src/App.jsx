@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import Search from "antd/es/input/Search";
 import Home from "./components/Home";
+import { XFilled } from "@ant-design/icons";
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -29,8 +30,8 @@ function App() {
 
       if (!tempSearch && isSubmitted && !searchValue) {
         messageApi.info("Nhập từ khóa để tìm kiếm");
-        setIsLoading(false)
-        return
+        setIsLoading(false);
+        return;
       }
 
       axios
@@ -64,6 +65,20 @@ function App() {
 
   return isSubmitted ? (
     <div className="relative">
+      <div className="fixed border border-slate-500 p-4 border-dashed top-[30%] left-[7%] flex flex-col gap-y-4">
+        <span>
+          <XFilled style={{ color: "red" }} />
+          <span className="ml-2">Dot product</span>
+        </span>
+        <span>
+          <XFilled style={{ color: "blue" }} />
+          <span className="ml-2">Euclid</span>
+        </span>
+        <span>
+          <XFilled style={{ color: "green" }} />
+          <span className="ml-2">Cosine</span>
+        </span>
+      </div>
       {contextHolder}
       <div className="absolute right-0 top-0 flex flex-col items-center">
         <img src={logoHutech} width={150} />
@@ -112,24 +127,41 @@ function App() {
             {filteredData.length ? (
               filteredData.map((item, index) => (
                 <div className="mb-6" key={index}>
-                  <Typography.Title level={3}>
-                    {index + 1}. {item.title}
-                  </Typography.Title>
-                  <Typography.Link href={item.url} target="blank">
-                    {item.url}
+                  <Typography.Link target="blank" href={item.url}>
+                    <Typography.Text className="font-bold text-[1.3rem] text-blue-700 hover:underline hover:text-blue-500">
+                      {item.title}
+                    </Typography.Text>
                   </Typography.Link>
-                  <br />
-                  <Typography.Text>
-                    Trọng số TF-IDF:{" "}
-                    <span className="text-[1.5rem]">
-                      {item.cosine}-{item.euclid}
-                    </span>
-                  </Typography.Text>
-                  <br />
-                  <Typography.Text>
-                    Trọng số PageRank:{" "}
-                    <span className="text-[1.5rem]">{item.rank}</span>
-                  </Typography.Text>
+                  <Typography.Paragraph>{item.url}</Typography.Paragraph>
+                  <Typography.Paragraph>
+                    {item.description}
+                  </Typography.Paragraph>
+                  <div className="border border-red-500 p-2 border-dashed">
+                    <Typography.Text>
+                      Trọng số TF-IDF:{" "}
+                      <span className="text-[1.5rem] font-bold">
+                        <span className="text-[#ff0000]">
+                          {item.dot_product.toFixed(6)}
+                        </span>{" "}
+                        -{" "}
+                        <span className="text-[#0000ff]">
+                          {item.euclid.toFixed(6)}
+                        </span>{" "}
+                        -{" "}
+                        <span className="text-[#008001]">
+                          {item.cosine.toFixed(6)}
+                        </span>
+                      </span>
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text>
+                      Trọng số PageRank:{" "}
+                      <span className="text-[1.5rem] font-bold">
+                        {item.rank.toFixed(6)}
+                      </span>
+                    </Typography.Text>
+                  </div>
+
                   {index !== data.length - 1 && (
                     <Divider style={{ backgroundColor: "black" }} />
                   )}
